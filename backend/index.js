@@ -7,7 +7,7 @@ const uuid = require('uuid');
 
 
 // Connexion à la base de données MongoDB
-mongoose.connect('mongodb://jonathan:JonathanPassWorD@localhost:27017/react', { useNewUrlParser: true });
+mongoose.connect('mongodb://jonathan:JonathanMotDePasse@localhost:27017/react', { useNewUrlParser: true });
 
 // Création du schéma de la base de données
 const schema = new mongoose.Schema({
