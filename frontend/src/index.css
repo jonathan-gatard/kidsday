@@ -59,7 +59,8 @@ ul, li, h2{
 
 .formulaire {
   margin:auto;
-  width:30%
+  width: 40%;
+  min-width: 600px;
 }
 
 .alertmessage {
@@ -80,7 +81,13 @@ ul, li, h2{
 }
 
 .statistiques{
-  text-align: center;
+  width: 40%;
+  min-width: 600px;
+  margin: auto;
+}
+
+.statistiques p{
+  text-align: right;
   padding-right: 2px;
   line-height: 8px;
   font-size: 15px;
@@ -88,8 +95,8 @@ ul, li, h2{
 
 table {
   border-collapse: collapse;
-  width: 100%;
-  max-width: 800px;
+  width: 40%;
+  min-width: 600px;
   margin: 0 auto;
   font-size: 1rem;
   color: #444;
@@ -133,15 +140,48 @@ table tr:nth-child(even) {
   background-color: darkred;
 }
 
-.btnShowChart{
-  margin:15px 0 0 0;
+#myChart{
+  margin: 30px auto 0 auto;
+  width: 40%;
+  min-width: 600px;
 }
 
-.chart{
-  margin-top:30px;
+#page-numbers {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0 ;
+  display: flex;
+  justify-content: center;
 }
 
-.profile{
-  margin:auto;
-  width: 30%;
+#page-numbers li {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  width: auto;
+}
+
+#page-numbers li.highlight {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.col1{
+  width:30%
+}
+
+.col2{
+  width:20%
+}
+
+.col3{
+  width:40%
+}
+
+.col4{
+  width:10%
 }

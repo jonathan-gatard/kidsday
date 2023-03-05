@@ -30,7 +30,6 @@ class Form extends React.Component {
         const { uid, kids } = this.state;
         postData(uid, kids)
             .then((response) => {
-                console.log(response);
                 this.setState({
                     requestId: response.headers["x-request-id"],
                     status: response.status,
@@ -38,7 +37,7 @@ class Form extends React.Component {
                     uid: "",
                     kids: ""
                 });
-                this.props.handleRefreshTable();
+                this.props.onPostDataSuccess(); // appel de la fonction de rappel
             })
             .catch((error) => {
                 this.setState({

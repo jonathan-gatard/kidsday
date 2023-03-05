@@ -19,6 +19,13 @@ class Stats extends React.Component {
         this.handleGetData();
     }
 
+    //AppelerHandleGetData when tebleKey change
+    componentDidUpdate(prevProps) {
+        if (prevProps.statsKey !== this.props.statsKey) {
+            this.handleGetData();
+        }
+    }
+
     //GetData from BDD
     handleGetData = () => {
         getData()
@@ -27,7 +34,7 @@ class Stats extends React.Component {
             })
             .catch((error) => {
                 this.setState({
-                    message: "Erreur lors de la récupération des données : " + error.message,
+                    message: error.message,
                     status: 500,
                     requestId: uuid()
                 });

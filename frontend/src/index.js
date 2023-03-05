@@ -12,22 +12,54 @@ class App extends React.Component {
     super(props);
     this.state = {
       tableKey: 0,
-      graphKey: 0
+      graphKey: 0,
+      statsKey: 0
     };
   }
+
+  handleTableUpdate = () => {
+    this.setState({
+      tableKey: this.state.tableKey + 1,
+    });
+  };
+
+  handleGraphUpdate = () => {
+    this.setState({
+      graphKey: this.state.graphKey + 1,
+    });
+  };
+
+  handleStatsUpdate = () => {
+    this.setState({
+      statsKey: this.state.statsKey + 1,
+    });
+  };
 
   render() {
     console.log("Refresh App");
     return (
       <div>
-        <Form handleRefreshTable={this.setState(prevState => ({ tableKey: prevState.tableKey + 1 }))}/>
-        <Stats/>
-        <Graph handleRefreshGraph={this.setState(prevState => ({ tableKey: prevState.graphKey + 1 }))}/>
-        <Table key={this.state.tableKey}/>
+        <Form
+          onPostDataSuccess={() => {
+            this.handleTableUpdate();
+            this.handleGraphUpdate();
+            this.handleStatsUpdate();
+          }}
+        //I don't call Table because the delete is managed in table and I can't manage refresh in the component
+        />
+        <Stats statsKey={this.state.statsKey} />
+        <Graph graphKey={this.state.graphKey} />
+        <Table
+          tableKey={this.state.tableKey}
+          onDeleteDataSuccess={() => {
+            this.handleGraphUpdate();
+            this.handleStatsUpdate();
+          }} />
       </div>
     );
   }
 }
 
+
 const root = createRoot(document.getElementById('root'));
-root.render(<App/>);
+root.render(<App />);

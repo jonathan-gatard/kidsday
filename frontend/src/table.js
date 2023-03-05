@@ -11,13 +11,22 @@ class Table extends React.Component {
       data: [],
       message: "",
       status: "",
-      requestId: ""
+      requestId: "",
+      currentPage: 1,
+      itemsPerPage: 12
     };
   }
 
   //Appeler HandleGetData when Table appears
   componentDidMount() {
     this.handleGetData();
+  }
+
+  //Appeler HandleGetData when tebleKey change
+  componentDidUpdate(prevProps) {
+    if (prevProps.tableKey !== this.props.tableKey) {
+      this.handleGetData();
+    }
   }
 
   //GetData from BDD
@@ -28,7 +37,7 @@ class Table extends React.Component {
       })
       .catch((error) => {
         this.setState({
-          message: "Erreur lors de la récupération des données : " + error.message,
+          message: error.message,
           status: 500,
           requestId: uuid()
         });
@@ -45,19 +54,40 @@ class Table extends React.Component {
           requestId: uuid()
         });
         this.handleGetData();
+        this.props.onDeleteDataSuccess();
       })
       .catch((error) => {
-        console.log(error);
         this.setState({
-          message: "Erreur lors de la suppression des données : " + error.message,
+          message: error.message,
           status: 500,
           requestId: uuid()
         });
       });
   };
-  
+
+  handleClick = (event) => {
+    this.setState({
+      currentPage: Number(event.target.id),
+    });
+  };
+
 
   render() {
+    const { data, currentPage, itemsPerPage } = this.state;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(data.length / itemsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+
+    const renderPageNumbers = pageNumbers.map((number) => {
+      return (
+        <li key={number} id={number} onClick={this.handleClick} className={currentPage === number ? "highlight" : ""}>
+          {number}
+        </li>
+      );
+    });
     console.log("Refresh Table");
     return (
       <div>
@@ -66,20 +96,31 @@ class Table extends React.Component {
         </div>
         <div className="historique">
           <table>
-            <tbody>
-              {(this.state.data).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).map((item) => (
-                <tr key={item._id}>
-                  <td>{item.uid}</td>
-                  <td>{item.kids}</td>
-                  <td>{moment(item.updatedAt).format("DD/MM/YYYY - HH[:]mm[:]ss")}</td>
-                  <td><span className="redcross" onClick={() => this.handleDelete(item._id, item.uid, item.kids)}>X</span></td>
+          <thead>
+          <tr>
+                  <td className="col1">UID</td>
+                  <td className="col2">Kids</td>
+                  <td className="col3">Last update</td>
+                  <td className="col4"></td>
                 </tr>
+          </thead>
+            <tbody>
+              {data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(indexOfFirstItem, indexOfLastItem).map((item) => (
 
+                <tr key={item._id}>
+                  <td className="col1">{item.uid}</td>
+                  <td className="col2">{item.kids}</td>
+                  <td className="col3">{moment(item.updatedAt).format("DD/MM/YYYY - HH[:]mm[:]ss")}</td>
+                  <td className="col4"><span className="redcross" onClick={() => { this.handleDelete(item._id, item.uid, item.kids); }}>X</span></td>
+                </tr>
               ))}
             </tbody>
           </table>
+          <div className="ulcontent">
+            <ul id="page-numbers">{renderPageNumbers}</ul>
+          </div>
         </div>
-      </div >
+      </div>
     );
   }
 }
