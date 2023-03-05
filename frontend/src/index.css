@@ -75,12 +75,12 @@ ul, li, h2{
 .good {
   background-color: green;
 }
-.error {
+.bad {
   background-color: red;
 }
 
 .statistiques{
-  text-align: right;
+  text-align: center;
   padding-right: 2px;
   line-height: 8px;
   font-size: 15px;

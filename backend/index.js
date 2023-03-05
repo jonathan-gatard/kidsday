@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:3000'
-}));
+const uuid = require('uuid');
+
+
 
 // Connexion à la base de données MongoDB
 mongoose.connect('mongodb://jonathan:JonathanPassWorD@localhost:27017/react', { useNewUrlParser: true });
@@ -18,53 +18,67 @@ const schema = new mongoose.Schema({
 // Création du modèle pour la base de données
 const Kidsday = mongoose.model('kidsday', schema);
 
-// Ajout de l'API pour lire la base de données
+
+
+//MIDDLEWARES
+app.use(cors({
+  origin: 'http://localhost:3000',
+  exposedHeaders: ['X-Request-Id']
+}));
+
+app.use(express.json());
+
+
+//API GET
+
 app.get('/api/read', async (req, res) => {
   try {
     const myData = await Kidsday.find();
     if (!myData) {
-      return res.status(404).send({ message: "Aucune donnée trouvée dans la base de données" });
+      return res.status(204).send();
     }
-    console.log(myData)
     res.status(200).send(myData);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "Erreur lors de la récupération des données dans la base de données" });
+  }
+  catch (err) {
+    res.status(500).send();
   }
 });
 
-//API post
-app.use(express.json()); // Middleware pour parser le corps de la requête en JSON
+
+//API POST
 app.post('/api/write', async (req, res) => {
+  const requestId = uuid.v4();
+  res.setHeader('X-Request-Id', requestId);
   try {
+    const uid = req.body.uid;
+    const existingData = await Kidsday.findOne({ uid: uid });
+    if (existingData) {
+      return res.status(409).send({ message: "UID " + uid + " already exists in database !", requestId });
+    }
     const newData = new Kidsday(req.body);
-    console.log(newData);
     await newData.save();
-    res.status(200).send({ message: "Données ajoutées à la collection avec succès !" });
+    res.status(200).send();;
   } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "Erreur lors de l'ajout des données à la base de données" });
+      res.status(500).send({requestId});
   }
 });
 
 
-
-
+//API DELETE
 app.delete('/api/delete/:id', (req, res) => {
   const id = req.params.id;
   Kidsday.findByIdAndDelete(id)
     .then(() => {
-      console.log(`Deleted`);
-      return res.status(200).send(`Deleted`);
+      return res.status(200).send();
     })
     .catch(err => {
-      console.log(err);
-      return res.status(500).send(err.message);
+      return res.status(500).send();
     });
 });
 
 
-// Démarrage du serveur
+//SEERVER
+
 app.listen(4000, () => {
   console.log('Serveur démarré sur le port 4000');
 });

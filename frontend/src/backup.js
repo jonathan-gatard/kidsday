@@ -3,11 +3,10 @@ import axios from "axios";
 import "./index.css";
 import moment from 'moment';
 import Chart from 'chart.js/auto';
-import { useAuth0 } from "@auth0/auth0-react";
 
 const API_URL = "http://127.0.0.1:4000/api/";
 
-function App() {
+function Form() {
     //Définir les props
     const [uid, setUid] = useState("");
     const [kids, setKids] = useState("");
@@ -153,44 +152,10 @@ function App() {
         return acc + current.kids;
     }, 0);
 
-    const LoginButton = () => {
-        const { loginWithRedirect } = useAuth0();
-        return <button onClick={() => loginWithRedirect()}>Log in to be able to delete data</button>;
-    };
-
-    const LogoutButton = () => {
-        const { logout } = useAuth0();
-        return (
-            <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-                Log Out
-            </button>
-        );
-    };
-
-    const Profile = () => {
-        const { user, isAuthenticated, isLoading } = useAuth0();
-
-        if (isLoading) {
-            return <div>Loading ...</div>;
-        }
-
-        return (
-            isAuthenticated && (
-                <div className="profile">
-                    <img src={user.picture} alt={user.name} />
-                    <h2>Connected as {user.name} !</h2>
-                </div>
-            )
-        );
-    };
-
-    const { isAuthenticated } = useAuth0();
 
     return (
 
         <div>
-            {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-            <Profile />
             {message && (
                 <div className={`alertmessage ${typeMessage}`}>
                     <p>{message}</p>
@@ -231,8 +196,7 @@ function App() {
                                         <td>
                                             {moment(statistiques.updatedAt).format("DD/MM/YYYY - HH[:]mm[:]ss")}
                                         </td>
-                                        {isAuthenticated && (
-                                            <td><span className="redcross" onClick={() => handleDelete(statistiques._id)}>X</span></td>)}
+                                        <td><span className="redcross" onClick={() => handleDelete(statistiques._id)}>X</span></td>
                                     </tr>
                                 ))}
                         </tbody>
