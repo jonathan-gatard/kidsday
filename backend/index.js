@@ -31,7 +31,6 @@ app.use(express.json());
 
 
 //API GET
-
 app.get('/api/read', async (req, res) => {
   try {
     const myData = await Kidsday.find();
